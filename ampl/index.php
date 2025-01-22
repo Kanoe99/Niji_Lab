@@ -8,7 +8,9 @@ require './db/Product.php';
 require './db/Group.php';
 
 $products = (new Product)->getAllProducts();
-$groups = (new Group)->getAllGroups();
+$groups = (new Group)->getAllGroupsOfLevel(0);
+
+$levels = (new Group)->getNumberOfLevels();
 
 ?>
 
@@ -30,6 +32,9 @@ $groups = (new Group)->getAllGroups();
     foreach ($groups as $group) {
         echo "{$group['name']}<br/>";
     }
+    echo "<br/>";
+
+    echo $levels;
     ?>
 </body>
 
