@@ -1,11 +1,15 @@
 <?php
-require "./db/connect.php";
-use db\Database;
 
-//do class for fetching so queries would be smaller
+use db\Product;
+use db\Group;
 
-$db = new Database();
-$results = $db->query("SELECT * from `groups` where id = :id", ["id" => 1])->find();
+require './db/Database.php';
+require './db/Product.php';
+require './db/Group.php';
+
+$products = (new Product)->getAllProducts();
+$groups = (new Group)->getAllGroups();
+
 ?>
 
 <!DOCTYPE html>
@@ -18,7 +22,15 @@ $results = $db->query("SELECT * from `groups` where id = :id", ["id" => 1])->fin
 </head>
 
 <body>
-    <?= $results['name'] ?>
+    <?php
+    foreach ($products as $product) {
+        echo "{$product['name']}<br/>";
+    }
+    echo "<br/>";
+    foreach ($groups as $group) {
+        echo "{$group['name']}<br/>";
+    }
+    ?>
 </body>
 
 </html>
