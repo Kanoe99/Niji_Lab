@@ -1,16 +1,39 @@
 <?php
 
-use db\Product;
+require './db/Database.php';
+require './db/Group.php';
+require './db/Product.php';
+
 use db\Group;
 
-require './db/Database.php';
-require './db/Product.php';
-require './db/Group.php';
+$groups = (new Group)->getAllGroups();
 
-$products = (new Product)->getAllProducts();
-$groups = (new Group)->getAllGroupsOfLevel(0);
+function hierarchy($groups, $parentId = 0): array
+{
+    $tree = [];
+    foreach ($groups as $group) {
+        $children = [];
+        if ($group['id_parent'] == $parentId) {
 
-$levels = (new Group)->getNumberOfLevels();
+            $children = hierarchy($groups, $group['id']);
+            if ($children) {
+                $group['children'] = $children;
+            }
+
+            $tree[] = $group;
+        }
+    }
+    return $tree;
+}
+
+function show($sorted)
+{
+    echo "<pre>";
+    var_dump($sorted);
+    echo "</pre>";
+}
+
+show(hierarchy($groups));
 
 ?>
 
@@ -25,17 +48,16 @@ $levels = (new Group)->getNumberOfLevels();
 
 <body>
     <?php
-    foreach ($products as $product) {
-        echo "{$product['name']}<br/>";
-    }
-    echo "<br/>";
-    foreach ($groups as $group) {
-        echo "{$group['name']}<br/>";
-    }
-    echo "<br/>";
 
-    echo $levels;
-    ?>
+    foreach ($groups as $group): ?>
+        <ul>
+            <li>
+                <?= $group['name']; ?>
+            </li>
+        </ul>
+    <?php endforeach; ?>
+
+
 </body>
 
 </html>
