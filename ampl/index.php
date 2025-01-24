@@ -38,8 +38,6 @@ function showMenu($sorted)
     echo "</ul>";
 }
 
-
-
 $menu = hierarchy($groups);
 ?>
 
@@ -49,20 +47,8 @@ $menu = hierarchy($groups);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-</head>
-<script>
-function displayProducts(products) {
-        const productList = document.getElementById("product-list");
-        productList.innerHTML = ""; // Clear the current list
-
-        products.forEach(product => {
-            const li = document.createElement("li");
-            li.textContent = product.name;
-            productList.appendChild(li);
-        });
-    }
-
-function handleGroupClick(groupId) {
+    <script>
+    function handleGroupClick(groupId) {
         event.preventDefault();
         console.log("Selected Group ID:", groupId);
         fetchProducts(groupId);
@@ -76,7 +62,19 @@ function handleGroupClick(groupId) {
             })
             .catch(error => console.error("Error fetching products:", error));
     }
-</script>
+
+    function displayProducts(products) {
+        const productList = document.getElementById("product-list");
+        productList.innerHTML = ""; // Clear the current list
+
+        products.forEach(product => {
+            const li = document.createElement("li");
+            li.textContent = product.name;
+            productList.appendChild(li);
+        });
+    }
+    </script>
+</head>
 <body>
     <div style="display: flex; gap: 50px;">
         <div>
