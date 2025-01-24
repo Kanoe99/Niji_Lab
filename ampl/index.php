@@ -5,8 +5,10 @@ require './db/Group.php';
 require './db/Product.php';
 
 use db\Group;
+use db\Product;
 
 $groups = (new Group)->getAllGroups();
+$products = (new Product)->getAllProducts();
 
 function hierarchy($groups, $parentId = 0): array
 {
@@ -26,14 +28,46 @@ function hierarchy($groups, $parentId = 0): array
     return $tree;
 }
 
-function show($sorted)
+function showMenu($sorted)
 {
-    echo "<pre>";
-    var_dump($sorted);
-    echo "</pre>";
+    echo "<ul>";
+
+    foreach ($sorted as $item) {
+        echo "<li><a href='#' onclick=\"console.log('test');\">" . $item['name'];
+        if (array_key_exists('children', $item)) {
+            showMenu($item['children']);
+        }
+        echo "</a></li>";
+    }
+
+    echo "</ul>";
 }
 
-show(hierarchy($groups));
+// $flatArray = [1, 3, 4, 5, 6, 7, 8];
+$flatArray = [3, 5, 6];
+
+function makeList($flatArray, $products)
+{
+    $data = [];
+    foreach ($products as $product) {
+        if (in_array($product['id_group'], $flatArray)) {
+            $data[] = $product;
+        }
+    }
+    return $data;
+}
+
+function displayList($dataList)
+{
+    echo "<ul style='display: flex; flex-direction: column;'>";
+    foreach ($dataList as $item) {
+        echo "<li>{$item['name']}</li>";
+    }
+    echo "</ul>";
+}
+
+$menu = hierarchy($groups);
+$dataList = makeList($flatArray, $products);
 
 ?>
 
@@ -47,15 +81,22 @@ show(hierarchy($groups));
 </head>
 
 <body>
-    <?php
 
-    foreach ($groups as $group): ?>
-        <ul>
-            <li>
-                <?= $group['name']; ?>
-            </li>
-        </ul>
-    <?php endforeach; ?>
+
+    <div style="display: flex; gap: 50px;">
+        <div>
+            <?php
+
+            showMenu($menu);
+
+            ?>
+        </div>
+        <div style="border: 5px solid black; padding: 20px 30px">
+            <?
+            displayList($dataList);
+            ?>
+        </div>
+    </div>
 
 
 </body>
