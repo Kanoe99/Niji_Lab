@@ -38,6 +38,19 @@ function showMenu($sorted)
     echo "</ul>";
 }
 
+
+
+$menu = hierarchy($groups);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script>
 function displayProducts(products) {
         const productList = document.getElementById("product-list");
         productList.innerHTML = ""; // Clear the current list
@@ -63,17 +76,7 @@ function handleGroupClick(groupId) {
             })
             .catch(error => console.error("Error fetching products:", error));
     }
-
-$menu = hierarchy($groups);
-?>
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
+</script>
 <body>
     <div style="display: flex; gap: 50px;">
         <div>
