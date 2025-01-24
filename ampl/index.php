@@ -38,17 +38,18 @@ function showMenu($sorted)
     echo "</ul>";
 }
 
-$menu = hierarchy($groups);
-?>
+function displayProducts(products) {
+        const productList = document.getElementById("product-list");
+        productList.innerHTML = ""; // Clear the current list
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <script>
-    function handleGroupClick(groupId) {
+        products.forEach(product => {
+            const li = document.createElement("li");
+            li.textContent = product.name;
+            productList.appendChild(li);
+        });
+    }
+
+function handleGroupClick(groupId) {
         event.preventDefault();
         console.log("Selected Group ID:", groupId);
         fetchProducts(groupId);
@@ -63,17 +64,15 @@ $menu = hierarchy($groups);
             .catch(error => console.error("Error fetching products:", error));
     }
 
-    function displayProducts(products) {
-        const productList = document.getElementById("product-list");
-        productList.innerHTML = ""; // Clear the current list
+$menu = hierarchy($groups);
+?>
 
-        products.forEach(product => {
-            const li = document.createElement("li");
-            li.textContent = product.name;
-            productList.appendChild(li);
-        });
-    }
-    </script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
 </head>
 <body>
     <div style="display: flex; gap: 50px;">
