@@ -1,5 +1,4 @@
 <?php
-
 require './db/Database.php';
 require './db/Group.php';
 require './db/Product.php';
@@ -14,14 +13,11 @@ function hierarchy($groups, $parentId = 0): array
 {
     $tree = [];
     foreach ($groups as $group) {
-        $children = [];
         if ($group['id_parent'] == $parentId) {
-
             $children = hierarchy($groups, $group['id']);
             if ($children) {
                 $group['children'] = $children;
             }
-
             $tree[] = $group;
         }
     }
@@ -31,74 +27,68 @@ function hierarchy($groups, $parentId = 0): array
 function showMenu($sorted)
 {
     echo "<ul>";
-
     foreach ($sorted as $item) {
-        echo "<li><a href='#' onclick=\"console.log('test');\">" . $item['name'];
+        // Use JavaScript to handle the click event
+        echo "<li><a href='#' onclick='handleGroupClick(" . $item['id'] . ")'>" . $item['name'];
         if (array_key_exists('children', $item)) {
             showMenu($item['children']);
         }
         echo "</a></li>";
     }
-
-    echo "</ul>";
-}
-
-// $flatArray = [1, 3, 4, 5, 6, 7, 8];
-$flatArray = [3, 5, 6];
-
-function makeList($flatArray, $products)
-{
-    $data = [];
-    foreach ($products as $product) {
-        if (in_array($product['id_group'], $flatArray)) {
-            $data[] = $product;
-        }
-    }
-    return $data;
-}
-
-function displayList($dataList)
-{
-    echo "<ul style='display: flex; flex-direction: column;'>";
-    foreach ($dataList as $item) {
-        echo "<li>{$item['name']}</li>";
-    }
     echo "</ul>";
 }
 
 $menu = hierarchy($groups);
-$dataList = makeList($flatArray, $products);
-
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <script>
+    function handleGroupClick(groupId) {
+        event.preventDefault();
+        console.log("Selected Group ID:", groupId);
+        fetchProducts(groupId);
+    }
+
+    function fetchProducts(groupId) {
+        fetch(`get_products.php?group_id=${groupId}`)
+            .then(response => response.json())
+            .then(data => {
+                displayProducts(data);
+            })
+            .catch(error => console.error("Error fetching products:", error));
+    }
+
+    function displayProducts(products) {
+        const productList = document.getElementById("product-list");
+        productList.innerHTML = ""; // Clear the current list
+
+        products.forEach(product => {
+            const li = document.createElement("li");
+            li.textContent = product.name;
+            productList.appendChild(li);
+        });
+    }
+    </script>
 </head>
-
 <body>
-
-
     <div style="display: flex; gap: 50px;">
         <div>
-            <?php
-
-            showMenu($menu);
-
-            ?>
+            <?php showMenu($menu); ?>
         </div>
         <div style="border: 5px solid black; padding: 20px 30px">
-            <?
-            displayList($dataList);
-            ?>
+            <div id="product-list">
+                <?php
+                // Display initial product list (if any)
+                $dataList = makeList($flatArray ?? [], $products);
+                displayList($dataList);
+                ?>
+            </div>
         </div>
     </div>
-
-
 </body>
-
 </html>
